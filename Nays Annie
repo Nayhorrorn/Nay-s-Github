@@ -1,6 +1,6 @@
 local version = "0.01"
 
-
+--[[          Auto Update          ]]
 local autoupdateenabled = true
 local UPDATE_SCRIPT_NAME = "Nay's Annie"
 local UPDATE_HOST = "raw.github.com"
@@ -36,21 +36,41 @@ end
 
 
 if myHero.charName ~="Annie" then return end
-
+local MyMinionManager
+local enemyMinions = minionManager(MINION_ENEMY, 900, myHero.visionPos, MINION_SORT_HEALTH_ASC)
 local ts
 local Qready, Wready, Rready = false
 
 function OnLoad()
-    ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 650, DAMAGE_MAGIC) -- added damage_magic since you are an apcaster - not required but better
-    Config = scriptConfig("Nay's Annie", "Nay's Annie") -- please change the menuttitle and not copy paste ;-) 
+    enemyMinions = minionManager(MINION_ENEMY, 650)
+    ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 650, DAMAGE_MAGIC)
+    Config = scriptConfig("Nay's Annie", "Nay's Annie")
     Config:addParam("drawCircle", "Draw Circle", SCRIPT_PARAM_ONOFF, true)
     Config:addParam("combo", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32) -- 32 = spacebar
+    Config:addParam("AutoQFarm", "Auto farm Q", SCRIPT_PARAM_ONKEYTOGGLE, false, 67)
+    Config:addTS(ts)
 end
      
     
 function OnTick()
     ts:update()
     Cooldowncheck()
+
+    if Config.AutoQFarm then AutoQFarm(minion) --if auto farm Q is enabled by button press then use AutoQFarm function
+    end
+end
+
+ 
+ function AutoQFarm() --our farm function
+    enemyMinions:update()
+    if not myHero:CanUseSpell(_Q) == READY then return end 
+        for i, minion in pairs(enemyMinions.objects) do 
+            if minion ~= nil and minion.valid and minion.team ~= myHero.team and not minion.dead and minion.visible and minion.health < getDmg("Q", minion, myHero) then --we check if we can kill it
+                if Qready then
+                CastSpell(_Q, minion) --and if we can, we kill it
+            end
+        end 
+end
     
     if ts.target ~= nil then
         if Config.combo then Combo(ts.target) end -- executes your combo while pressing the combobutton
