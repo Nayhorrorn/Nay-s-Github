@@ -4,7 +4,7 @@ local version = "0.01"
 local autoupdateenabled = true
 local UPDATE_SCRIPT_NAME = "Nay's Annie"
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "PATHHERE"
+local UPDATE_PATH = "/Nayhorrorn/Nay-s-Github/master/Nays Annie"
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
