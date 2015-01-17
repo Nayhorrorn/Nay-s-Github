@@ -45,7 +45,6 @@ function OnLoad()
     Config = scriptConfig("Annie", "Nay's Annie") -- please change the menuttitle and not copy paste ;-) 
     Config:addParam("drawCircle", "Draw Circle", SCRIPT_PARAM_ONOFF, true)
     Config:addParam("combo", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32) -- 32 = spacebar
-    SwainMenu:addTS(ts)
 end
      
     
