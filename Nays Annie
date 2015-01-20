@@ -76,6 +76,7 @@ end
             end
         end 
 end
+end
 
 function Cooldowncheck() -- Checks for your Cooldowns
     Qready = (myHero:CanUseSpell(_Q) == READY)
