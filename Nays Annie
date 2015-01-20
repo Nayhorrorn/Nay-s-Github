@@ -1,4 +1,4 @@
-local version = "0.02"
+local version = "0.03"
 
 --[[          Auto Update          ]]
 local autoupdateenabled = true
@@ -34,7 +34,6 @@ if autoupdateenabled then
 end
 
 
-
 if myHero.charName ~="Annie" then return end
 local MyMinionManager
 local enemyMinions = minionManager(MINION_ENEMY, 900, myHero.visionPos, MINION_SORT_HEALTH_ASC)
@@ -53,28 +52,29 @@ end
      
     
 function OnTick()
-    ts:update()
     Cooldowncheck()
-
-    if Config.AutoQFarm then AutoQFarm(minion) --if auto farm Q is enabled by button press then use AutoQFarm function
+    if Config.AutoQFarm then
+      AutoQFarm() --if auto farm Q is enabled by button press then use AutoQFarm function
+    end
+    if Config.combo then
+        ts:update()
+        if ts.target then
+            Combo(ts.target)
+        end
     end
 end
 
- 
+
+
  function AutoQFarm() --our farm function
+    if not Qready then return end
     enemyMinions:update()
-    if not myHero:CanUseSpell(_Q) == READY then return end 
         for i, minion in pairs(enemyMinions.objects) do 
             if minion ~= nil and minion.valid and minion.team ~= myHero.team and not minion.dead and minion.visible and minion.health < getDmg("Q", minion, myHero) then --we check if we can kill it
                 if Qready then
                 CastSpell(_Q, minion) --and if we can, we kill it
             end
         end 
-end
-    
-    if ts.target ~= nil then
-        if Config.combo then Combo(ts.target) end -- executes your combo while pressing the combobutton
-    end
 end
 
 function Cooldowncheck() -- Checks for your Cooldowns
@@ -84,14 +84,15 @@ function Cooldowncheck() -- Checks for your Cooldowns
 end
 
 function Combo(unit) -- This function handles our combo
-    if Qready then
+       if Qready then
         CastSpell(_Q, unit)
-    elseif Wready then 
+      elseif Wready then 
         CastSpell(_W, unit.x, unit.z)
-    elseif Rready then
+       elseif Rready then
         CastSpell(_R, unit.x, unit.z)
     end
 end
+
 
 function OnDraw()
     if Config.drawCircle then
