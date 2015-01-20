@@ -1,4 +1,4 @@
-local version = "0.03"
+local version = "0.04"
 
 --[[          Auto Update          ]]
 local autoupdateenabled = true
@@ -32,24 +32,29 @@ if autoupdateenabled then
     end
     AddTickCallback(update)
 end
-
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 if myHero.charName ~="Annie" then return end
 local MyMinionManager
 local enemyMinions = minionManager(MINION_ENEMY, 900, myHero.visionPos, MINION_SORT_HEALTH_ASC)
 local ts
-local Qready, Wready, Rready = false
+local Qready, Wready, Rready, Eready = false
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 function OnLoad()
     enemyMinions = minionManager(MINION_ENEMY, 650)
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 650, DAMAGE_MAGIC)
     Config = scriptConfig("Nay's Annie", "Nay's Annie")
     Config:addParam("drawCircle", "Draw Circle", SCRIPT_PARAM_ONOFF, true)
-    Config:addParam("combo", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32) -- 32 = spacebar
+    Config:addParam("combo", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32) 
     Config:addParam("AutoQFarm", "Auto farm Q", SCRIPT_PARAM_ONKEYDOWN, false, 67)
+    Config:addParam("harass", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, 97)
     Config:addTS(ts)
 end
-     
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------     
     
 function OnTick()
     Cooldowncheck()
@@ -62,8 +67,15 @@ function OnTick()
             Combo(ts.target)
         end
     end
+           if Config.harass then
+            ts:update()
+            if ts.target then
+                harass(ts.target)
+            end
 end
-
+end
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 
  function AutoQFarm() --our farm function
@@ -77,12 +89,17 @@ end
         end 
 end
 end
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 function Cooldowncheck() -- Checks for your Cooldowns
     Qready = (myHero:CanUseSpell(_Q) == READY)
     Wready = (myHero:CanUseSpell(_W) == READY)
     Rready = (myHero:CanUseSpell(_R) == READY)
+    Eready = (myHero:CanUseSpell(_E) == READY)
 end
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 function Combo(unit) -- This function handles our combo
        if Qready then
@@ -93,10 +110,22 @@ function Combo(unit) -- This function handles our combo
         CastSpell(_R, unit.x, unit.z)
     end
 end
-
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+function harass(unit)
+    if Qready then
+        CastSpell(_Q, unit)
+        elseif Wready then
+            CastSpell(_W, unit.x, unit.z)
+            elseif Eready then
+                CastSpell(_W)
+            end
+        end
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 function OnDraw()
     if Config.drawCircle then
-        DrawCircle(myHero.x, myHero.y, myHero.z, 650, 0x111111)
+        DrawCircle(myHero.x, myHero.y, myHero.z, 650, 0x0101DF)
     end
 end
