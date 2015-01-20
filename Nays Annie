@@ -46,7 +46,7 @@ function OnLoad()
     Config = scriptConfig("Nay's Annie", "Nay's Annie")
     Config:addParam("drawCircle", "Draw Circle", SCRIPT_PARAM_ONOFF, true)
     Config:addParam("combo", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32) -- 32 = spacebar
-    Config:addParam("AutoQFarm", "Auto farm Q", SCRIPT_PARAM_ONKEYTOGGLE, false, 67)
+    Config:addParam("AutoQFarm", "Auto farm Q", SCRIPT_PARAM_ONKEYDOWN, false, 67)
     Config:addTS(ts)
 end
      
